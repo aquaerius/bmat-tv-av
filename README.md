@@ -113,7 +113,7 @@ If successful, this method returns a response body with the following structure:
 
 | Property name | Value | Description | Notes |
 |:--|:--|:--|:--|
-| id | integer | The id  of the file. |  |
+| id | integer | The id  of the program. |  |
 | original_title | string | The original title of the program. |  |
 | local_title | string | The local title of the program. |  |
 | year | string | The year of the program. |  |
