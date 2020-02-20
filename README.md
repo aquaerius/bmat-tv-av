@@ -18,7 +18,7 @@ Each resource type has one or more data representations and one or more methods.
  ### Programs
  | Method | HTTP request | Description |
  |:--|:--|:--|
- | list | **GET  /programs** | Gets information about the programs broadcasted. **Required query parameters: startDate, endDate**  |
+ | list | **GET  /programs** | Gets information about the programs broadcasted.<br>**Required query parameters: startDate, endDate**  |
  
  
 <hr>
@@ -36,7 +36,7 @@ Lists the channels that broadcast programs.
 |:--|:--|:--|
 | Optional query parameters |
 | id | integer | The ID of the channel |
-| country | string | The A3 (UN) country code from which channels will be returned. |
+| country | string | The [ISO 3166-1 alpha-3](https://unstats.un.org/unsd/tradekb/Knowledgebase/Country-Code) country code from which channels will be returned. |
 
 #### Request body
 
@@ -60,7 +60,7 @@ If successful, this method returns a response body with the following structure:
 | id | integer | The channel id. |  |
 | name | string | The name of the channel. |  |
 | country | string | The country of the channel. |  |
-| country_code | string | The A3 (UN) country code of the channel |  |
+| country_code | string | The [ISO 3166-1 alpha-3](https://unstats.un.org/unsd/tradekb/Knowledgebase/Country-Code) country code of the channel |  |
 | programs | nested object | The list of programs aired on this channel. |  |
 
 
@@ -84,7 +84,7 @@ time details) aired within the specified time interval and country, and matching
 | **endDate** | **string** | **The end date to search for programs from, formatted like: 'YYYYMMDD'** |
 | Optional query parameters |
 | title | string | The local title of the program |
-| country | string | The A3 (UN) country code from which channels will be returned. |
+| country | string | The [ISO 3166-1 alpha-3](https://unstats.un.org/unsd/tradekb/Knowledgebase/Country-Code) country code from which channels will be returned. |
 
 #### Request body
 
