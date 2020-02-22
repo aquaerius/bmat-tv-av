@@ -6,6 +6,16 @@ TV/AV repository
 This API reference is organized by resource type. 
 Each resource type has one or more data representations and one or more methods.
 
+## Authorization:
+To access the API resources, users must make the requests with a valid API Token.
+Users with valid credentials, can make a POST request to http://www.bmatapis.com/tv/v1/api-auth-token/ passing the **username** & **password** parameters, and a Token will be returned.
+#### Example response:
+```python
+{
+    "token": "4246918ab412693d82081990re3886b33fa8f688"
+}
+```
+
 ## Resource types
 #### URIs relative to http://www.bmatapis.com/tv/v1, unless otherwise noted
 
