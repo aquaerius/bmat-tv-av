@@ -13,13 +13,11 @@ from .models import COUNTRY_CHOICES
 class ChannelSerializer(serializers.Serializer):
     uid = serializers.IntegerField(read_only=True)
     name = serializers.CharField(required=False, allow_blank=True, max_length=100, read_only=True)
-    # country_code = serializers.ChoiceField(choices=COUNTRY_CHOICES, default='N/A', read_only=True)
     country = serializers.SerializerMethodField()
 
     def get_country(self, obj):
         channel = obj
         country = channel.get_country_code_display()
-        # Convert to date only format
         return country
 
     class Meta:
@@ -30,7 +28,7 @@ class ProgramSerializer(serializers.ModelSerializer):
     channel = ChannelSerializer()
     class Meta:
         model = Program
-        fields = ('uid', 'original_title', 'local_title', 'year', 'channel')  # fields = ('uid', 'original_title', 'local_title', 'year', 'channel')
+        fields = ('uid', 'original_title', 'local_title', 'year', 'channel')
 
 
 class ShowtimeSerializer(serializers.ModelSerializer):
@@ -51,9 +49,10 @@ class ShowtimeSerializer(serializers.ModelSerializer):
         # Convert to date only format
         return duration
 
+
     class Meta:
         model = Showtime
-        fields = ('program', 'start_date', 'start_time', 'duration', )
+        fields = ('program', 'start_date', 'start_time', 'duration' )
     
     
 

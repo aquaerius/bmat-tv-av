@@ -21,15 +21,21 @@ from django.contrib.auth import views as auth_views
 
 from core import urls as core_urls
 from tv import urls as tv_urls
+from rest_framework import routers
+from tv import views as tv_views
 
 
-# For test will redirect straight to tv 
+router = routers.DefaultRouter()
+router.register(r'programs', tv_views.ShowtimeViewSet)
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^login/$', auth_views.login, {'template_name': 'core/login.html'}, name='login'),
     url(r'^logout/$', auth_views.logout, {'next_page': '/'}, name='logout'),
     url(r'^', include(core_urls)), 
-    url(r'^tv/', include(tv_urls)),  
+    url(r'^tv/', include(tv_urls)),
+    url(r'^tv/v1/', include(router.urls)),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))  
 ]
 
 if settings.DEBUG:
@@ -37,4 +43,3 @@ if settings.DEBUG:
     urlpatterns = [
         url(r'^__debug__/', include(debug_toolbar.urls)),
     ] + urlpatterns
-

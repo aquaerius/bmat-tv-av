@@ -19,10 +19,7 @@ from django.shortcuts import redirect
 from django.conf import settings
 from django.contrib import messages
 from django.http import HttpResponseRedirect
-from rest_framework import viewsets
 from django.shortcuts import get_object_or_404
-
-
 
 
 from .forms import ProgramForm
@@ -130,3 +127,11 @@ class ShowtimeDetailView(DetailView):
         showtime = context['object']
         context['duration'] = datetime.timedelta.total_seconds(showtime.end_time - showtime.start_time)
         return context
+
+
+class ShowtimeViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows showtimes to be viewed or edited.
+    """
+    queryset = Showtime.objects.all().order_by('program','-start_time')
+    serializer_class = ShowtimeSerializer
