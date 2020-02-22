@@ -154,6 +154,12 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10
+    'PAGE_SIZE': 10,
+    'DEFAULT_RENDERER_CLASSES': (
+         #UnicodeJSONRenderer has an ensure_ascii = False attribute,
+         #thus it will not escape characters.
+         #You only need to keep this one if you're using the browsable API
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    )
 }
 

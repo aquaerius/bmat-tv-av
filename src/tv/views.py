@@ -91,7 +91,7 @@ class ChannelDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(ChannelDetailView, self).get_context_data(**kwargs)
         context['now'] = timezone.now()
-        context['programs'] = context['object'].program_set.order_by('local_title','-uid')
+        context['programs'] = context['object'].programs.order_by('local_title','-uid')
         return context
 
 
@@ -116,7 +116,7 @@ class ProgramDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(ProgramDetailView, self).get_context_data(**kwargs)
         context['now'] = timezone.now()
-        context['showtimes'] = context['object'].showtime_set.order_by('-start_time')
+        context['showtimes'] = context['object'].showtimes.order_by('-start_time')
         return context
 
 

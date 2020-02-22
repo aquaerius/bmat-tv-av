@@ -294,7 +294,7 @@ class Program(models.Model):
 
     # Channel:
     # The channel where it is played
-    channel = models.ForeignKey('Channel', on_delete=models.CASCADE, null=True)
+    channel = models.ForeignKey('Channel', related_name='programs', on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return 'Program: ' + self.local_title + 'with id ' + self.uid
@@ -307,7 +307,7 @@ class Program(models.Model):
 class Showtime(models.Model):
     # Program
     # Programs have unique ids
-    program = models.ForeignKey('Program', on_delete=models.CASCADE, null=True)
+    program = models.ForeignKey('Program', related_name='showtimes', on_delete=models.CASCADE, null=True)
 
     # Start Datetime 
     # Should be able to store at min 'YYYYmmdd - HH:mm:ss'
