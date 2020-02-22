@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 
-app_name = 'tv'
+
 # Channel_country
 """The UN also uses 3-letter codes, and numerical codes to identify nations, and those are shown below."""
 COUNTRY_CHOICES = [
@@ -259,9 +259,9 @@ COUNTRY_CHOICES = [
     ('N/A', 'Unknown')
 ]
 
+
 @python_2_unicode_compatible
 class Channel(models.Model):
-
     # Channel_id
     uid = models.BigIntegerField(unique=True)
 
@@ -271,13 +271,12 @@ class Channel(models.Model):
     country_code = models.CharField(max_length=3, choices=COUNTRY_CHOICES, default='N/A', null=True)
 
     def __str__(self):
-        return 'Channel: {}'.format(self.name)
+        return 'Channel: ' + self.name
 
 
 @python_2_unicode_compatible
 class Program(models.Model):
-
-    # Program_id 
+    # Program_id
     # Must exist only once in db
     uid = models.BigIntegerField(unique=True)
 
@@ -298,7 +297,7 @@ class Program(models.Model):
     channel = models.ForeignKey('Channel', on_delete=models.CASCADE, null=True)
 
     def __str__(self):
-        return 'Program: {} with id {}'.format(self.local_title, self.uid)
+        return 'Program: ' + self.local_title + 'with id ' + self.uid
 
     def __repr__(self):
         return "<{} {}: {}>".format(self.__class__.__name__, self.pk, self)
@@ -306,25 +305,23 @@ class Program(models.Model):
 
 @python_2_unicode_compatible
 class Showtime(models.Model):
-
-    # Program 
+    # Program
     # Programs have unique ids
     program = models.ForeignKey('Program', on_delete=models.CASCADE, null=True)
 
     # Start Datetime 
     # Should be able to store at min 'YYYYmmdd - HH:mm:ss'
-    start_time = models.DateTimeField(default=None,null=True)
+    start_time = models.DateTimeField(default=None, null=True)
 
     # End Datetime 
     # Should be able to store at min 'YYYYmmdd - HH:mm:ss'
-    end_time = models.DateTimeField(default=None,null=True)
-
+    end_time = models.DateTimeField(default=None, null=True)
 
     class Meta:
-        unique_together = ('program','start_time','end_time')
+        unique_together = ('program', 'start_time', 'end_time')
 
     def __str__(self):
-        return 'Showtime on {} on {}'.format(self.start_time, self.program)
+        return 'Showtime on ' + self.start_time + ' on ' + self.program
 
     def __repr__(self):
         return "<{} {}: {}>".format(self.__class__.__name__, self.pk, self)

@@ -22,7 +22,7 @@ from django.http import HttpResponseRedirect
 from rest_framework import viewsets
 from django.shortcuts import get_object_or_404
 
-from django.contrib.auth import logout
+
 
 
 from .forms import ProgramForm
@@ -54,7 +54,7 @@ def showtimes_view(request):
             if country_code != 'N/A':
                 context['showtimes'] = context['showtimes'].filter(program__channel__country_code=country_code)
             context['showtimes'] = context['showtimes'].order_by(
-                'program__local_title','-start_time'
+                'program__local_title','program__id','-start_time'
                 )
             return render(request, "tv/showtime_list.html", context)
         else:
@@ -78,7 +78,7 @@ class ChannelListView(ListView):
     ordering = ['name','uid']
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super(ChannelListView, self).get_context_data(**kwargs)
         context['now'] = timezone.now()
         return context
           
@@ -89,7 +89,7 @@ class ChannelDetailView(DetailView):
     paginate_by = 50  # if pagination is desired
     
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super(ChannelDetailView, self).get_context_data(**kwargs)
         context['now'] = timezone.now()
         context['programs'] = context['object'].program_set.order_by('local_title','-uid')
         return context
@@ -102,7 +102,7 @@ class ProgramListView(ListView):
     ordering = ['local_title']
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super(ProgramListView, self).get_context_data(**kwargs)
         context['now'] = timezone.now()
         return context
 
@@ -114,7 +114,7 @@ class ProgramDetailView(DetailView):
     ordering = ['-start_time']
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super(ProgramDetailView, self).get_context_data(**kwargs)
         context['now'] = timezone.now()
         context['showtimes'] = context['object'].showtime_set.order_by('-start_time')
         return context
@@ -125,24 +125,8 @@ class ShowtimeDetailView(DetailView):
     model = Showtime
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super(ShowtimeDetailView, self).get_context_data(**kwargs)
         context['now'] = timezone.now()
         showtime = context['object']
         context['duration'] = datetime.timedelta.total_seconds(showtime.end_time - showtime.start_time)
         return context
-
-
-class ProgramViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows programs to be viewed.
-    """
-    queryset = Program.objects.all()
-    serializer_class = ProgramSerializer
-
-
-class ChannelViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows channels to be viewed.
-    """
-    queryset = Channel.objects.all()
-    serializer_class = ChannelSerializer

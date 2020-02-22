@@ -3,17 +3,35 @@
 {% block content %}
 
 <div class="row align-items-center">
-	<div class="col-auto">
-		<h2>Showtimes search results: {{ showtimes.count }}</h2>
-		<ul>
-			{% for showtime in showtimes %}
-			<li>
-				<a href="/tv/programs/showtime/{{ showtime.pk }}/">{{ showtime.program.local_title }} - ({{ showtime.program.channel.country_code }}) - from: {{showtime.start_time}} to: {{showtime.end_time}}</a>
-			</li>
-			{% empty %}
-			<li>No showtimes found.</li>   
-			{% endfor %}
-		</ul>
-	</div>
+  <div class="col-auto li-wrapper">
+    <h2>Programs search results: {{ showtimes.count }}</h2>
+    <br>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:10%">ID</th>
+          <th>Program local title</th>
+          <th style="width:15%">Country</th>
+          <th>Start time</th>
+        </tr>
+      </thead>
+	  <br>
+      <tbody>
+        {% for showtime in showtimes %}
+        <tr>
+          <td style="width:10%;"><a href="/tv/programs/showtime/{{ showtime.pk }}/">{{ showtime.id }}</a></td>
+          <td style="word-wrap: break-word;">{{ showtime.program.local_title }}</td>
+          <td style="width:15%">{{ showtime.program.channel.country_code }}</td>
+          <td>{{ showtime.start_time }}</td>
+        </tr>
+
+        {% empty %}
+        <h4>No showtimes found.</h4>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  </div>
 </div>
 {% endblock %}
+

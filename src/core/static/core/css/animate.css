@@ -1,6 +1,6 @@
 .animated {
-    -webkit-animation-duration: 5s;
-    animation-duration: 5s;
+    -webkit-animation-duration: 3s;
+    animation-duration: 3s;
     -webkit-animation-fill-mode: both;
     animation-fill-mode: both;
 }
@@ -12,8 +12,8 @@
     }
 
     40% {
-        -webkit-transform: translateY(-25px);
-        transform: translateY(-25px);
+        -webkit-transform: translateY(-22px);
+        transform: translateY(-22px);
     }
 
     60% {
@@ -30,9 +30,9 @@
     }
 
     40% {
-        -webkit-transform: translateY(-25px);
-        -ms-transform: translateY(-25px);
-        transform: translateY(-25px);
+        -webkit-transform: translateY(-22px);
+        -ms-transform: translateY(-22px);
+        transform: translateY(-22px);
     }
 
     60% {
@@ -41,7 +41,7 @@
         transform: translateY(-15px);
     };
 }
-.bounce {
+.bounce-1 {
     -webkit-animation-name: bounce;
     animation-name: bounce;
 }

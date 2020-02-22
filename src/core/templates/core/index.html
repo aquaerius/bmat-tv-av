@@ -1,17 +1,25 @@
 {% extends 'core/navigation.html' %}
-
+{% load i18n static %}
+{% block links %}
+<link href="{% static 'core/css/animate.css' %}" rel="stylesheet" type="text/css">
+{% endblock  %}
 {% block content %}
 <div class="row align-items-center">
 	<div class="col"></div>
 	<div class="col-auto">
-		<h2>Hello <span class="bold"></span>{{ user.username }}!</h2>
+	<h2>Hello <span class="bold">{{ user.username }}</span>!</h2>
 	</div>
 	<div class="col"></div>
 </div>
 <div class="row align-items-center">
 	<div class="col"></div>
-<div class="col-10">
+<div class="col-10 animated">
+	<br>
     <h3>Browse through the programs or channels in the database by using the links in the menu bar</h3>
+	<br>
+	<br>
+	<a href="{% url 'login' %}"><h4 class="animated bounce">Requires signing in</h4></a>
+	
 </div>
 <div class="col-auto"></div>
 </div>

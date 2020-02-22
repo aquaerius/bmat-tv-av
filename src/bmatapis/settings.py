@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '4e5rj*g_dbbzv6y=9o3lsa8f_0&u=t&27(tr-ug(@hd6njaoln'
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -40,12 +40,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+    'django_extensions',
     'rest_framework',
-    'tv',
     'crispy_forms',
     'debug_toolbar',
     'core',
+    'tv',
 
 ]
 
@@ -142,7 +142,7 @@ USE_TZ = False
 
 STATIC_URL = '/static/'
 
-LOGIN_URL = '/login/'
+LOGIN_URL='/login/'
 LOGIN_REDIRECT_URL = 'tv:programs'
 
 # REST Framework
