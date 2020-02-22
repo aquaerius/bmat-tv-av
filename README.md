@@ -7,7 +7,7 @@ This API reference is organized by resource type.
 Each resource type has one or more data representations and one or more methods.
 
 ## Resource types
-#### URIs relative to https://www.bmatapis.com/tv/v1, unless otherwise noted
+#### URIs relative to http://www.bmatapis.com/tv/v1, unless otherwise noted
 
  ### Channels
  
@@ -29,7 +29,7 @@ Lists the channels that broadcast programs.
 ### Request
 #### HTTP request
 
-**GET https://www.bmatapis.com/tv/v1/channels**
+**GET http://www.bmatapis.com/tv/v1/channels**
 
 #### Parameters
 | Parameter name | Value | Description |
@@ -74,7 +74,7 @@ time details) aired within the specified time interval and country, and matching
 ### Request
 #### HTTP request
 
-**GET https://www.bmatapis.com/tv/v1/programs**
+**GET http://www.bmatapis.com/tv/v1/programs**
 
 #### Parameters
 | Parameter name | Value | Description |
