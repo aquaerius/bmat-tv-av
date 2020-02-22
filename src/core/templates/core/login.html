@@ -1,0 +1,47 @@
+{% extends 'core/navigation.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<!-- LOGIN ---------------------------------------------------->
+<div class="row align-items-center">
+	<div class="col"></div>
+	<div class="col-auto login">
+		<div class="row align-items-center">
+			<div class="col col-block text-center">
+				<h1 class="">TV & Audiovisuals<br>Programs</h1>
+				<br>
+			</div>
+		</div>
+
+		<form method="post" action="{% url 'login' %}">
+			
+				
+				{% csrf_token %}
+				{% for field in form %}
+				<div class="row align-items-center">
+				<div class="col"></div>
+				<div class="col login-form ">
+					{{ field | as_crispy_field }}
+				</div>
+				<div class="col"></div>
+				</div>
+				{% endfor %}
+			
+				<div class="row align-items-center">
+				<div class="col"></div>
+				<div class="col login-form text-center">
+					<br>
+					<button type="submit" class="btn login-btn btn-md btn-block ">Log in</button>
+				</div>
+				<div class="col"></div>
+			</div>
+		</form>
+	</div>
+	<div class="col"></div>
+
+</div>
+<!-- END Login ---------------------------------------------------->
+{% endblock %}
+
+

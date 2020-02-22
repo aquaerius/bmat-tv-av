@@ -1,0 +1,27 @@
+{% extends 'core/navigation.html' %}
+
+{% block content %}
+<div class="row align-items-center">
+	<div class="col-auto">
+		<h3>Program: {{ object.program.local_title }}</h3>
+	</div>
+</div>
+<br>
+<div class="row align-items-center">
+	<div class="col-auto">
+		<h3>Start time: {{ object.start_time }}</h3>
+	</div>
+</div>
+<br>
+<div class="row align-items-center">
+	<div class="col-auto">
+		<h3>End time: {{ object.end_time }}</h3>
+	</div>
+</div>
+<br>
+<div class="row align-items-center">
+	<div class="col-auto">
+		<h3>Duration in seconds: {{ duration }}</h3>
+	</div>
+</div>
+{% endblock %}

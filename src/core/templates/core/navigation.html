@@ -1,0 +1,46 @@
+{% extends 'core/base.html' %}
+
+{% block links %}
+<!-- LINKS ---------------------------------------------------->
+<style>@import url('https://fonts.googleapis.com/css?family=Audiowide&display=swap')</style>
+<!-- END LINKS ---------------------------------------------------->
+{% endblock  %}
+
+{% load static %}
+
+{% block nav %}
+<!-- NAV ---------------------------------------------------->
+
+<nav class="page-header navbar navbar-expand-sm">
+  <div class="navbar-brand">
+    <div class="bmat-logo "></div><h2 class="text-light" >TV & Audiovisuals</h2>
+  </div>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample03" aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarsExample03">
+
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'tv:channels' %}">Channels</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'tv:programs' %}">Programs</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'tv:showtimes' %}">Search</a>
+      </li>
+      {% if user.is_authenticated %}
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'core:logout' %}">Logout</a>
+      </li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>
+
+
+<!-- END NAV ---------------------------------------------------->
+{% endblock %}
+

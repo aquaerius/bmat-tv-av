@@ -1,0 +1,19 @@
+{% extends 'core/navigation.html' %}
+
+{% block content %}
+
+<div class="row align-items-center">
+	<div class="col-auto">
+		<h2>Showtimes search results: {{ showtimes.count }}</h2>
+		<ul>
+			{% for showtime in showtimes %}
+			<li>
+				<a href="/tv/programs/showtime/{{ showtime.pk }}/">{{ showtime.program.local_title }} - ({{ showtime.program.channel.country_code }}) - from: {{showtime.start_time}} to: {{showtime.end_time}}</a>
+			</li>
+			{% empty %}
+			<li>No showtimes found.</li>   
+			{% endfor %}
+		</ul>
+	</div>
+</div>
+{% endblock %}

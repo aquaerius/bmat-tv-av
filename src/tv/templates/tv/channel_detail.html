@@ -1,0 +1,42 @@
+{% extends 'core/navigation.html' %}
+
+{% block content %}
+<div class="row align-items-center">
+	<div class="col-auto">
+		<h3>ID: {{ object.uid }}</h3>
+	</div>
+</div>
+<br>
+<div class="row align-items-center">
+	<div class="col-auto">
+		<h3>Name: {{ object.name }}</h3>
+	</div>
+</div>
+<br>
+<div class="row align-items-center">
+	<div class="col-auto">
+		<h3>Country: {{ object.get_country_code_display }}</h3>
+	</div>
+</div>
+<br>
+<div class="row align-items-center">
+	<div class="col-auto">
+		<h3>Country Code: {{ object.country_code }}</h3>
+	</div>
+</div>
+<br>
+<div class="row align-items-center">
+	<div class="col-auto">
+		<h3>Programs:</h3>
+	</div>
+</div>
+<div class="row align-items-center">
+	<div class="col-auto">
+		<ul>
+			{% for program in programs %}
+			<li><a href="/tv/programs/{{ program.pk }}">{{ program.local_title }} from the year: {{ program.year }} - ID: {{ program.uid }} </a></li>
+			{% endfor %}
+		</ul>
+	</div>
+</div>
+{% endblock %}
