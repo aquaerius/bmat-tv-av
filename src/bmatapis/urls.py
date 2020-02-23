@@ -17,7 +17,7 @@ from django.conf import settings
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-
+from django.views.generic import RedirectView
 
 from core import urls as core_urls
 from tv import urls as tv_urls
@@ -30,6 +30,7 @@ router.register(r'programs', tv_views.ShowtimeViewSet)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url('^%s$' %settings.LOGIN_URL[1:], RedirectView(url='bmatapis/login/')),
     url(r'^login/$', auth_views.login, {'template_name': 'core/login.html'}, name='login'),
     url(r'^logout/$', auth_views.logout, {'next_page': '/'}, name='logout'),
     url(r'^', include(core_urls)), 

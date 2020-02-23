@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+import secret_settings
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,12 +21,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = secret_settings.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost','www.bmatapis.com']
+ALLOWED_HOSTS = ['bmatapis.localhost','35.242.209.162']
 
 INTERNAL_IPS = [
     '127.0.0.1',
@@ -86,23 +87,14 @@ WSGI_APPLICATION = 'bmatapis.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    },
-
-
-}
-
-"""
-    'tv_av_mysql': {
         'ENGINE': 'django.db.backends.mysql', 
-        'NAME': 'DB_BMAT_TV_PROGRAMS',
-        'USER': 'DB_SERVICE',
-        'PASSWORD': 'DB_PASS',
+        'NAME': secret_settings.BMATAPIS_DATABASE_NAME,
+        'USER': secret_settings.BMATAPIS_DATABASE_USER,
+        'PASSWORD': secret_settings.BMATAPIS_DATABASE_PASSWORD,
         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',
     }
-"""
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -141,6 +133,8 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = '/home/gustavo_visionpura/apps/bmat-tv-av/static/'
+
 
 LOGIN_URL='/login/'
 LOGIN_REDIRECT_URL = 'tv:programs'
