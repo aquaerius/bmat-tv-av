@@ -10,7 +10,7 @@ from .models import Program
 from .models import COUNTRY_CHOICES
 
 
-class ChannelSerializer(serializers.Serializer):
+class ChannelSerializer(serializers.HyperlinkedModelSerializer):
     uid = serializers.IntegerField(read_only=True)
     name = serializers.CharField(required=False, allow_blank=True, max_length=100, read_only=True)
     country = serializers.SerializerMethodField()
@@ -21,21 +21,23 @@ class ChannelSerializer(serializers.Serializer):
         return country
 
     class Meta:
-        fields = ('uid', 'name', 'country')
+        model = Channel
+        fields = ('url', 'uid', 'name', 'country')
 
-
-class ProgramSerializer(serializers.ModelSerializer):
+class ProgramSerializer(serializers.HyperlinkedModelSerializer):
     channel = ChannelSerializer()
+    
     class Meta:
         model = Program
-        fields = ('uid', 'original_title', 'local_title', 'year', 'channel')
+        fields = ('url', 'uid', 'original_title', 'local_title', 'year', 'channel')
 
 
-class ShowtimeSerializer(serializers.ModelSerializer):
+class ShowtimeSerializer(serializers.HyperlinkedModelSerializer):
     program = ProgramSerializer()
     start_time = serializers.DateTimeField(read_only=True, format="%H:%M")
     start_date = serializers.SerializerMethodField()
     duration = serializers.SerializerMethodField()
+    
 
     def get_start_date(self, obj):
         start_time = obj.start_time
@@ -52,8 +54,4 @@ class ShowtimeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Showtime
-        fields = ('program', 'start_date', 'start_time', 'duration' )
-    
-    
-
-    
+        fields = ('url', 'program', 'start_date', 'start_time', 'duration' )
