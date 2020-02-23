@@ -146,7 +146,7 @@ class ProgramViewSet(viewsets.ModelViewSet):
     """
     authentication_classes = [TokenAuthentication, BasicAuthentication, SessionAuthentication]
     permission_classes = (IsAuthenticated,) 
-    queryset = Showtime.objects.all().order_by('program','-start_time')
+    queryset = Program.objects.all().order_by('program','-start_time')
     serializer_class = ShowtimeSerializer
 
 class ChannelViewSet(viewsets.ModelViewSet):
