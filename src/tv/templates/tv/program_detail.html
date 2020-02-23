@@ -1,0 +1,51 @@
+{% extends 'core/navigation.html' %}
+
+{% block content %}
+<div class="row align-items-center">
+	<div class="col-auto">
+		<h3>ID: {{ object.uid }}</h3>
+	</div>
+</div>
+<br>
+<div class="row align-items-center">
+	<div class="col-auto">
+		<h3>Local Title: {{ object.local_title }}</h3>
+	</div>
+</div>
+<br>
+<div class="row align-items-center">
+	<div class="col-auto">
+		<h3>Original Title: {{ object.original_title }}</h3>
+	</div>
+</div>
+<br>
+<div class="row align-items-center">
+	<div class="col-auto">
+		<h3>Year: {{ object.year }}</h3>
+	</div>
+</div>
+<br>
+<div class="row align-items-center">
+	<div class="col-auto">
+		<h3>Channel: {{ object.channel }}</h3>
+	</div>
+</div>
+<br>
+<div class="row align-items-center">
+	<div class="col-auto">
+		<h3>Showtimes:</h3>
+	</div>
+</div>
+<div class="row align-items-center">
+	<div class="col-auto">
+		<ul>
+			{% for showtime in showtimes %}
+			<li><a href="/tv/programs/showtime/{{ showtime.pk }}">From {{ showtime.start_time }} to {{ showtime.end_time }} </a></li>
+			{% endfor %}
+		</ul>
+	</div>
+</div>
+
+
+
+{% endblock %}

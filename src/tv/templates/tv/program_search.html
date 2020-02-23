@@ -1,0 +1,42 @@
+{% extends 'core/navigation.html' %}
+
+{% block content %}
+<div class="row align-items-center">
+	<div class="col"></div>
+	<div class="col-auto">
+		<h2><span class="bold"></span>Search for programs</h2>
+	</div>
+	<div class="col"></div>
+</div>
+<div class="row align-items-center">
+	<div class="col"></div>
+	<div class="col-auto">
+		<form method='post' action="{% url 'tv:showtimes' %}">
+			{% csrf_token %}
+			<div class="fieldWrapper">
+				{{ form.start_date.errors }}
+				{{ form.start_date.label_tag }}
+				{{ form.start_date }}
+			</div>
+			<div class="fieldWrapper">
+				{{ form.end_date.errors }}
+				{{ form.end_date.label_tag }}
+				{{ form.end_date }}
+			</div>
+			<div class="fieldWrapper">
+				{{ form.local_title.errors }}
+				{{ form.local_title.label_tag }}
+				{{ form.local_title }}
+			</div>
+			<div class="fieldWrapper">
+				{{ form.country_code.errors }}
+				{{ form.country_code.label_tag }}
+				{{ form.country_code }}
+			</div>
+			<input type="submit" value="Search">
+		</form>
+	</div>
+
+	<div class="col"></div>
+</div>
+{% endblock %}

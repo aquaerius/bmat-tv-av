@@ -1,0 +1,51 @@
+{% extends 'core/navigation.html' %}
+
+{% block content %}
+<div class="row align-items-center">
+	<div class="col-auto li-wrapper">
+		<h2>Program List</h2>
+        <br>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:10%">ID</th>
+          <th>Program local title</th>
+          <th style="width:15%">Country</th>
+          <th>Channel</th>
+        </tr>
+      </thead>
+	  <br>
+      <tbody>
+        {% for program in page_obj %}
+        <tr>
+          <td style="width:10%;"><a href="/tv/programs/{{ program.pk }}/">{{ program.id }}</a></td>
+          <td style="word-wrap: break-word;">{{ program.local_title }}</td>
+          <td style="width:15%">{{ program.channel.country_code }}</td>
+          <td>{{ program.channel }}</td>
+        </tr>
+
+        {% empty %}
+        <h4>No programs found.</h4>
+        {% endfor %}
+      </tbody>
+    </table>
+	</div>
+</div>
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+{% endblock %}
