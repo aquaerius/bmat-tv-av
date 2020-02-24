@@ -24,7 +24,7 @@ class ChannelSerializer(serializers.HyperlinkedModelSerializer):
         model = Channel
         fields = ('url', 'uid', 'name', 'country')
 
-class ProgramSerializer(serializers.ModelModelSerializer):
+class ProgramSerializer(serializers.ModelSerializer):
     channel = ChannelSerializer()
     
     class Meta:
