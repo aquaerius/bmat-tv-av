@@ -3,6 +3,7 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.views.generic import RedirectView
+from rest_framework.authtoken.views import obtain_auth_token
 
 from core import urls as core_urls
 from tv import urls as tv_urls
@@ -21,7 +22,8 @@ urlpatterns = [
     url(r'^', include(core_urls)), 
     url(r'^tv/', include(tv_urls)),
     url(r'^tv/v1/', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))  
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^api-token-auth/', obtain_auth_token, name='api_token_auth')
 ]
 
 if settings.DEBUG:
