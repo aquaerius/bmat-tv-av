@@ -131,7 +131,7 @@ class ShowtimeDetailView(DetailView):
         return context
 
 
-class ShowtimeViewSet(viewsets.ModelViewSet):
+class ShowtimeViewSet(viewsets.HyperlinkedModelViewSet):
     """
     API endpoint that allows program times to be viewed or edited.
     """
@@ -140,14 +140,6 @@ class ShowtimeViewSet(viewsets.ModelViewSet):
     queryset = Showtime.objects.all().order_by('program','-start_time')
     serializer_class = ShowtimeSerializer
 
-class ProgramViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows program times to be viewed or edited.
-    """
-    authentication_classes = [TokenAuthentication, BasicAuthentication, SessionAuthentication]
-    permission_classes = (IsAuthenticated,) 
-    queryset = Program.objects.all().order_by('program','-start_time')
-    serializer_class = ShowtimeSerializer
 
 class ChannelViewSet(viewsets.ModelViewSet):
     """

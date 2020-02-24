@@ -11,7 +11,7 @@ from tv import views as tv_views
 
 
 router = routers.DefaultRouter()
-router.register(r'programs', tv_views.ProgramViewSet)
+router.register(r'programs', tv_views.ShowtimeViewSet)
 router.register(r'channels', tv_views.ChannelViewSet)
 
 urlpatterns = [

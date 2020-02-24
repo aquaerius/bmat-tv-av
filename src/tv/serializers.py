@@ -24,12 +24,12 @@ class ChannelSerializer(serializers.HyperlinkedModelSerializer):
         model = Channel
         fields = ('url', 'uid', 'name', 'country')
 
-class ProgramSerializer(serializers.HyperlinkedModelSerializer):
+class ProgramSerializer(serializers.ModelModelSerializer):
     channel = ChannelSerializer()
     
     class Meta:
         model = Program
-        fields = ('url', 'uid', 'original_title', 'local_title', 'year', 'channel')
+        fields = ('uid', 'original_title', 'local_title', 'year', 'channel')
 
 
 class ShowtimeSerializer(serializers.HyperlinkedModelSerializer):
