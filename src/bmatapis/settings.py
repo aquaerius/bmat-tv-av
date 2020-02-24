@@ -26,7 +26,7 @@ SECRET_KEY = secret_settings.SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost','35.242.209.162']
+ALLOWED_HOSTS = ['localhost','35.242.209.162','34.66.114.233']
 
 INTERNAL_IPS = [
     '127.0.0.1',
