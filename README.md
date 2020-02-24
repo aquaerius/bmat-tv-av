@@ -39,7 +39,7 @@ Users with valid credentials, can make a POST request to http://www.bmatapis.com
  | Method | HTTP request | Description |
  |:--|:--|:--|
  | list | **GET <br>/programs** | Gets information about the programs broadcasted. |
- | get | **GET <br>/programs/*primary_key*** | Gets the details about the program. |
+ | get | **GET <br>/programs/*****primary_key*** | Gets the details about the program. |
 
  
 <hr>
@@ -94,7 +94,9 @@ Returns the properties of a program.
 ### Request
 #### HTTP request
 
+
 **GET http://www.bmatapis.com/tv/v1/programs/***primary_key*/
+
 
 #### Parameters
 | Parameter name | Value | Description |
@@ -154,6 +156,7 @@ If successful, this method returns a response body with the following structure:
 ```python
 {
   "program": {
+    "url": "http://www.bmatapis.com/tv/v1/programs/4239",
     "uid": 4424900793,
     "original_title": "Neven's Irish Food Trails",
     "local_title": "Neven's Irish Food Trails",

@@ -9,6 +9,8 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.views.generic.base import TemplateView
 from rest_framework import generics, viewsets
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
 from .models import Channel
 from .models import Program
 from .models import Showtime
@@ -131,7 +133,19 @@ class ShowtimeDetailView(DetailView):
 
 class ShowtimeViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows showtimes to be viewed or edited.
+    API endpoint that allows program times to be viewed or edited.
     """
+    authentication_classes = [TokenAuthentication, BasicAuthentication, SessionAuthentication]
+    permission_classes = (IsAuthenticated,) 
     queryset = Showtime.objects.all().order_by('program','-start_time')
     serializer_class = ShowtimeSerializer
+
+
+class ChannelViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows channels to be viewed or edited.
+    """
+    authentication_classes = [TokenAuthentication, BasicAuthentication, SessionAuthentication]
+    permission_classes = (IsAuthenticated,) 
+    queryset = Channel.objects.all().order_by('uid','-name')
+    serializer_class = ChannelSerializer
