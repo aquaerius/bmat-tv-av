@@ -1,9 +1,17 @@
 # bmat-tv-av
 TV/AV repository
 
-**Notes:** 
-- For the purposes of this test, Basic Authentication is also available. (username + password)
+**Asignment notes:** 
+- The readable HTML interface is at: **http://34.66.114.233/tv/programs/**. It includes a view to search for programs by date.
 - For testing replace the API root by **http://34.66.114.233/tv/v1/**.
+- For the purposes of this asignment, Basic Authentication is also available. (username + password)
+- **Testing credentials:**
+    | Username | Password |
+    |---|---|
+    | bmatapis_admin | bmatapis!test |
+    | bmat_operations | neversleep |
+    | bmat_devs | neversleep |
+
 
 # TV API Reference
 
