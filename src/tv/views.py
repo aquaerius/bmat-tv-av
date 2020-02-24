@@ -131,7 +131,7 @@ class ShowtimeDetailView(DetailView):
         return context
 
 
-class ShowtimeViewSet(viewsets.HyperlinkedModelViewSet):
+class ShowtimeViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows program times to be viewed or edited.
     """
