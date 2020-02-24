@@ -1,6 +1,10 @@
 # bmat-tv-av
 TV/AV repository
 
+**Notes:** 
+- For the purposes of this test, Basic Authentication is also available. (username + password)
+- For testing replace the API root by **http://34.66.114.233/tv/v1/**.
+
 # TV API Reference
 
 The API can be accessed via HTML interface at the API endpoints. 
@@ -12,21 +16,18 @@ Each resource type has one or more data representations and one or more methods.
 
 ## Authorization:
 To access the API resources, users must make the requests with a valid API Token.
-Users with valid credentials, can make a POST request to http://www.bmatapis.com/tv/v1/api-auth-token/ passing the **username** & **password** parameters, and a Token will be returned.
+Users with valid credentials, can make a POST request to http://www.bmatapis.com/tv/v1/api-token-auth/ passing the **username** & **password** parameters, and a Token will be returned.
 #### Example response:
 ```python
 {
     "token": "4246918ab412693d82081990re3886b33fa8f688"
 }
 ```
-**Notes:** 
-- For the purposes of this test, Basic Authentication is also available. (username + password)
-- For testing replace the API root by **http://35.242.209.162/tv/v1**.
 
 <hr>
 
 ## Resource types
-#### URIs relative to http://www.bmatapis.com/tv/v1, unless otherwise noted
+#### URIs relative to http://www.bmatapis.com/tv/v1/, unless otherwise noted.
 
  ### Channels
  
@@ -46,10 +47,11 @@ Users with valid credentials, can make a POST request to http://www.bmatapis.com
 # Channels: list
 
 Lists the channels that broadcast programs.
+
 ### Request
 #### HTTP request
 
-**GET http://www.bmatapis.com/tv/v1/channels**
+**GET http://www.bmatapis.com/tv/v1/channels/**
 
 #### Request body
 
@@ -66,6 +68,7 @@ If successful, this method returns a response body with the following structure:
   "previous": string,
   "results": [
     {
+      "url": string,
       "uid": integer,
       "name": string,
       "country": string
@@ -75,23 +78,23 @@ If successful, this method returns a response body with the following structure:
 }
 ```
 
-| Property name | Value | Description |  |
+| Property name | Value | Description | Notes |
 |:--|:--|:--|:--|
 | count | integer | The quantity of channels returned. |  |
 | next | string | The url of the next page. |  |
 | previous | string | The url of the previous page. |  |
-| results | object | The list of channels with their details in the page. |  |
+| results | object | The list of channels with details in the page. | Not all details are returned. |
 
 <hr>
 
 # Programs: get
 
-Returns the details of a program.
+Returns the properties of a program.
 
 ### Request
 #### HTTP request
 
-**GET http://www.bmatapis.com/tv/v1/programs/*primary_key***
+**GET http://www.bmatapis.com/tv/v1/programs/***primary_key*/
 
 #### Parameters
 | Parameter name | Value | Description |
@@ -111,37 +114,38 @@ If successful, this method returns a response body with the following structure:
 ```python
 {
   "program": {
-    "url": string,
     "uid": integer,
     "original_title": string,
     "local_title": string,
     "year": integer,
     "channel": {
+      "url": string
       "uid": integer,
       "name": string,
       "country": string
     }
   },
+  "url": string
   "start_date": string,
   "start_time": string,
-  "duration": integer
+  "duration": number
 }
 ```
 
 | Property name | Value | Description | Notes |
 |:--|:--|:--|:--|
-| url | string | The url of the program. |  |
-| uid | integer | The id  of the program. |  |
-| original_title | string | The original title of the program. |  |
-| local_title | string | The local title of the program. |  |
-| year | string | The year of the program. |  |
+| url | string | The url of the program time. |  |
+| program.uid | integer | The ID  of the program. | Unique |
+| program.original_title | string | The original title of the program. |  |
+| program.local_title | string | The local title of the program. |  |
+| program.year | string | The year of the program. |  |
 | channel | nested object | The channel where the program was aired. |  |
 | channel.id | integer | The channel id. |  |
 | channel.name | string | The name of the channel where the program was aired. |  |
 | channel.country | string | The country of the channel. |  |
 | start_date | string | The start date.  | Formatted as: **'YYYY-mm-dd'** |
 | start_time | string | The start time. | Formatted as: **'HH:MM'** |
-| duration | integer | The duration in seconds. |  |
+| duration | number | The duration in seconds. |  |
 
 <hr>
 
@@ -155,6 +159,7 @@ If successful, this method returns a response body with the following structure:
     "local_title": "Neven's Irish Food Trails",
     "year": "2017",
     "channel": {
+      "url": "http://34.66.114.233/tv/v1/channels/2/",
       "uid": 69036687,
       "name": "RTE 1",
       "country": "Ireland"
@@ -162,19 +167,20 @@ If successful, this method returns a response body with the following structure:
   },
   "start_date": "2018-02-28",
   "start_time": "20:30",
-  "duration": 1800
+  "duration": 1800,
+  "url": "http://34.66.114.233/tv/v1/programs/2/"
 }
 ```
 <hr>
 
 # Programs: list
 
-Returns a list of the programs aired, with all details. Paginated by 10 programs.
+Returns a list of the programs aired, with all their properties. Paginated by 10 programs.
 
 ### Request
 #### HTTP request
 
-**GET http://www.bmatapis.com/tv/v1/programs**
+**GET http://www.bmatapis.com/tv/v1/programs/**
 
 #### Request body
 
