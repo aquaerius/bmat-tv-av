@@ -1,6 +1,10 @@
+import datetime
+
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
 from django.utils.crypto import get_random_string
+
+from tv import models as tv_models
 
 class Command(BaseCommand):
     description='Generate ".xlsx" reports of programs aired between start_date and end_date.\n'
@@ -14,33 +18,28 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            'file_path', 
-            metavar='F', 
+            '--file-path', 
             type=str,
             help='Name of the ".xslx" file.'
             )
         parser.add_argument(
-            'start_date', 
-            metavar='Di', 
+            '--start-date', 
             type=str,
             help='Start date formatted as: "YYYY-MM-DD"'
             )
         parser.add_argument(
-            'end_date', 
-            metavar='Df', 
-            type=str,
-            help='End date formatted as: "YYYY-MM-DD"'
-            )
-        parser.add_argument(
-            'start_time', 
-            metavar='Ti', 
+            '--start-time', 
             type=str,
             default='00:00:00',
             help='Start time formatted as: "HH:MM"'
             )
         parser.add_argument(
-            'end_time', 
-            metavar='Tf', 
+            '--end-date', 
+            type=str,
+            help='End date formatted as: "YYYY-MM-DD"'
+            )
+        parser.add_argument(
+            '--end-time', 
             type=str,
             default='00:00:00',
             help='End time formatted as: "HH:MM"'
@@ -48,5 +47,7 @@ class Command(BaseCommand):
 
 
     def handle(self, *args, **kwargs):
-        print(kwargs)
-        # do something with the db and models views etc
+        start_time = datetime.datetime.strptime(kwargs['start_date']+kwargs['start_time'], '%Y-%m-%d%H:%M')
+        end_time = datetime.datetime.strptime(kwargs['end_date']+kwargs['end_time'], '%Y-%m-%d%H:%M')
+        programs = tv_models.Showtime.objects.filter(start_time__gt=start_time, end_time__lt=end_time)
+        print(programs)

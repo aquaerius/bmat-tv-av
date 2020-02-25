@@ -321,7 +321,7 @@ class Showtime(models.Model):
         unique_together = ('program', 'start_time', 'end_time')
 
     def __str__(self):
-        return 'Showtime on ' + self.start_time + ' on ' + self.program
+        return 'Showtime on ' + str(self.start_time) + ' on ' + self.program
 
     def __repr__(self):
         return "<{} {}: {}>".format(self.__class__.__name__, self.pk, self)

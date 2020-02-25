@@ -39,6 +39,7 @@ class ProgramGuideUpload:
         df = df.drop(['start_date', 'duration_in_seconds'], axis=1)
         self.df = df
         logger.info('Dataframe modeled for database upload.')
+        print('Dataframe modeled for database upload.')
 
     def create_channel(self,row):
         channel, created = tv_models.Channel.objects.get_or_create(
@@ -50,6 +51,11 @@ class ProgramGuideUpload:
             channel.save()
             self.channels.append(channel)
             logger.info('Channel {} from {} with id {} added to DB.'.format(
+                channel.name,
+                channel.country_code,
+                channel.id
+                ))
+            print('Channel {} from {} with id {} added to DB.'.format(
                 channel.name,
                 channel.country_code,
                 channel.id
@@ -71,7 +77,11 @@ class ProgramGuideUpload:
         if created:
             program.save()
             self.programs.append(program)
-            logger("Program {} with id {} added to DB.".format(
+            logger.info("Program {} with id {} added to DB.".format(
+                program.local_title,
+                program.uid,
+                ))
+            print("Program {} with id {} added to DB.".format(
                 program.local_title,
                 program.uid,
                 ))
@@ -87,6 +97,7 @@ class ProgramGuideUpload:
             showtime.save()
             self.showtimes.append(showtime)
             logger.info('Showtime starting on {} added to '.format(row.start_time)+program.local_title)
+            print('Showtime starting on {} added to '.format(row.start_time)+program.local_title)
         return showtime
     
     @classmethod
@@ -118,5 +129,6 @@ class Command(BaseCommand):
                 ProgramGuideUpload.upload_showtimes(upload)
                 print("Finished uploading programs from {} to database.".format(filename))
 
-        except:
+        except Exception as e:
+            print(e)
             print("File does not exist. Verify the path and try again.")
