@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import numpy as np
 import datetime
+import dateutil.parser
 import json
 
 from django.contrib.auth.models import User
@@ -9,123 +10,76 @@ from django.core.management.base import BaseCommand
 from django.utils.crypto import get_random_string
 
 from tv import models as tv_models
+         
 
-
+# Change directory to filesdir
 class VericastMatchReporter:
-    channel = None
-    matches = None
+    """
+    @params: filename, start_date, start_time, end_date, end_time, time_zone
+    """
     filename = None
+    channel = None
+    report_name = 'vericast-api-matches'
+    report_file_extension = 'xslx'
+    df = pd.DataFrame(columns=['title','length','album','artist','start_time_utc'])
+    matches_between_dates = None
+    start_time = None
+    end_time = None
+    dfeng = None
+    
     
     def __init__(self, **kwargs):
+        """Initilize report, make a pandas dataframe with the matches."""
+        
         self.filename = kwargs['filename']
-        # Change dir
-        os.chdir(self.filename[0:-len(self.filename.split('/')[-1])])
-        # Extract channel name from filename
         self.channel = self.filename.split('/')[-1].split('-')[-1].split('.')[0]
-        # Initialize df with all matches from file
-        df = pd.DataFrame(columns=['title','length','album','artist','start_time_utc'])
+        self.report_name += '-' + self.channel 
+        try:
+            # Make a df with engineer's times and bring them to UTC for correct comparison
+            start_time_naive = dateutil.parser.parse(kwargs['start_date']+'T'+kwargs['start_time'])
+            end_time_naive = dateutil.parser.parse(kwargs['end_date']+'T'+kwargs['end_time'])
+            dfeng = pd.DataFrame({'naive_datetime':[start_time_naive,end_time_naive]}, index=['filter_start','filter_end'])
+            dfeng['local_datetime'] = pd.DatetimeIndex(dfeng['naive_datetime']).tz_localize(tz =kwargs['time_zone'])
+            dfeng['utc_datetime'] = pd.DatetimeIndex(dfeng['local_datetime']).tz_convert(tz ='UTC')
+            self.dfeng = dfeng
+            self.report_name +=' {} to {}.'.format(self.dfeng.loc['filter_start']['local_datetime'],self.dfeng.loc['filter_end']['local_datetime'])
+            self.report_name =kwargs['destination_dir']+ '.{}'.format(self.report_file_extension)
+        except:
+            raise
         with open(self.filename) as f:
             for line in f.readlines():
-                match = json.loads(line)
-                df = df.append(match, ignore_index=True)
-        df['title'] = df['title'].astype(str)
-        df['length'] = df['length'].astype(int)
-        df['album'] = df['album'].astype(str)
-        df['artist'] = df['artist'].astype(str)
-        df['start_time_utc'] = pd.to_datetime(df['start_time_utc'], yearfirst=True, utc=True)
-
-        self.df = df
-
-    def model_data_for_xslx(self):
-
-        df['title'] = df['title'].astype(str)
-        df['start_time_utc'] = pd.to_datetime(yearfirst=True, utc=True)
-        df['start_date'] = (df['start_time_utc'].astype(str)).map(
-            lambda x: datetime.datetime.strptime(x, '%Y%m%dT%')
-        )
-        df['start_time'] = (df['start_time_utc'].astype(str)).map(
-            lambda x: datetime.datetime.strptime(x, '%Y%m%dT%')
-        )
-        df['duration_in_seconds'] = pd.to_timedelta(df['duration_in_seconds'], unit='seconds')
-        df['end_time'] = df['start_time'] + df['duration_in_seconds']
-        df = df.drop(['start_date', 'duration_in_seconds'], axis=1)
-        self.df = df
-        logger.info('Dataframe modeled for database upload.')
-        print('Dataframe modeled for database upload.')
-
-    def create_channel(self,row):
-        channel, created = tv_models.Channel.objects.get_or_create(
-            uid=row.channel_id,
-            name=row.channel_name,
-            country_code=row.channel_country
-            )
-        if created:
-            channel.save()
-            self.channels.append(channel)
-            logger.info('Channel {} from {} with id {} added to DB.'.format(
-                channel.name,
-                channel.country_code,
-                channel.id
-                ))
-            print('Channel {} from {} with id {} added to DB.'.format(
-                channel.name,
-                channel.country_code,
-                channel.id
-                ))
-        return channel
-
-    def create_program(self,row, channel):
-        if row.program_year != 'n/a':
-            year = row.program_year[0:4]
-        else:
-            year = row.program_year
-        program, created =tv_models.Program.objects.get_or_create(
-            uid=row.program_id, 
-            channel=channel,
-            year=year,
-            local_title=row.program_local_title,
-            original_title=row.program_original_title
-            )
-        if created:
-            program.save()
-            self.programs.append(program)
-            logger.info("Program {} with id {} added to DB.".format(
-                program.local_title,
-                program.uid,
-                ))
-            print("Program {} with id {} added to DB.".format(
-                program.local_title,
-                program.uid,
-                ))
-        return program
-
-    def create_showtime(self,row, program):
-        showtime, created = tv_models.Showtime.objects.get_or_create(
-            program=program,
-            start_time=row.start_time,
-            end_time=row.end_time
-            )
-        if created:
-            showtime.save()
-            self.showtimes.append(showtime)
-            logger.info('Showtime starting on {} added to '.format(row.start_time)+program.local_title)
-            print('Showtime starting on {} added to '.format(row.start_time)+program.local_title)
-        return showtime
+                # Append line into df
+                self.df = self.df.append(json.loads(line), ignore_index=True)
+                
+        # Cast dates as aware datetime with timezone 'UTC'
+        self.df['start_time_utc'] = pd.to_datetime(self.df['start_time_utc'], yearfirst=True, utc=True)
+        print('Reporter initialized.')
+        
+    def create_report_between_times_xlsx(self):
+        print("Finding programs that match from channel: {}".format(self.channel))        
+        # Make a mask boolean mask between dates
+        mask = (self.df['start_time_utc'] >= self.dfeng.loc['filter_start']['utc_datetime']) & (self.df['start_time_utc'] <= self.dfeng.loc['filter_end']['utc_datetime'])
+        self.matches_between_dates = self.df.loc[mask]
+        # Write report to xslx
+        writer = pd.ExcelWriter(self.report_name)
+        self.matches_between_dates.to_excel(writer, sheet_name=self.channel, index=False)
+        writer.save()
+        writer.close()
+        print('File {} with {} matches has been created.'.format(self.report_name, self.matches_between_dates.count()))
     
-    @classmethod
-    def upload_showtimes(cls, self):
-        for index, row in self.df.iterrows():
-            channel = cls.create_channel(self, row)
-            program = cls.create_program(self, row, channel)
-            cls.create_showtime(self, row, program)
-        return
+    def __str__(self):
+        return 'Vericast API matches from '+self.channel.replace('_', ' ').upper()+' between times '+str(self.start_time)+' and '+str(self.end_time)+' UTC.'
+
+    def __repr__(self):
+        return "<{}: Channel {}>".format(self.__class__.__name__, self.channel)
+    
 
 class Command(BaseCommand):
     # TODO Chenge description filename
     description='Generate ".xlsx" reports of programs aired between start_date and end_date.\n'
     'Optionally filter between start_time and end_time, and timezone./n'
     '/nExample: vericast-reports --filename matches-my_channel.json --start-date 2018-02-26 --end-date 2018-02-28 --start-time 12:00 --end-time 00:00:'
-    '--time-zone "Europe/Madrid" \n Returns a file named "vericast-matches-report.xslx" in the current directory, with the programs aired between ' 
+    '--time-zone "Europe/Madrid" \n Returns a file named "vericast-matches-report-channel-startdate-to-end-date.xslx" in the current directory, with the programs aired between ' 
     '"2018-02-26 12:00" and "2018-02-28 00:00".'
 
     
@@ -170,17 +124,13 @@ class Command(BaseCommand):
         # verify file exists
         try:
             if os.path.isfile(kwargs['filename']):
+                # Store destination directory
+                kwargs['destination_dir'] = os.getcwd()
+                # Change working directory
+                os.chdir(kwargs['filename'][0:-len(kwargs['filename'].split('/')[-1])])
+                kwargs['filename'] = kwargs['filename'].split('/')[-1]
                  # Create reporter from file
-                print("Finding programs that match from channel: {}".format(self.channel))
                 reporter = VericastMatchReporter(**kwargs)
-                # TODO rest of the routine
-                
-                print("File {} with matches for {} between dates {} and {} has been created.")
+                reporter.create_report_between_times_xlsx()
         except Exception as e:
             print(e)
-"""
-{"title": "Hav Kide Karu", "length": 6, "album": "Exotic Lands 2", "artist": "Marc Ferrari, Michael McGregor", "start_time_utc": "2018-02-15T21:39:50.000000"}
-{"title": "Up All Night", "length": 18, "album": "Soul 1", "artist": "Jamie Dunlap, Scott Nickoley, Stephen Lang", "start_time_utc": "2018-02-15T21:36:05.000000"}
-{"title": "Rooster Pharmacy", "length": 2, "album": "AltPop v3", "artist": "Daniel Holter, Kyle White", "start_time_utc": "2018-02-15T21:25:28.000000"}
-
-"""
