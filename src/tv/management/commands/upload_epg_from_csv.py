@@ -131,4 +131,4 @@ class Command(BaseCommand):
 
         except Exception as e:
             print(e)
-            print("File does not exist. Verify the path and try again.")
+            

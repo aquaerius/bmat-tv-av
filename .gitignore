@@ -132,3 +132,4 @@ dmypy.json
 .DS_Store
 .idea/
 .conf
+bmatapis/secret_settings.py
