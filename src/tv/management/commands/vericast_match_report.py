@@ -15,7 +15,7 @@ class VericastMatchReport:
     channel = None
     matches = None
     filename = None
-
+    
     def __init__(self, **kwargs):
         self.filename = kwargs['filename']
         # Change dir
@@ -34,8 +34,7 @@ class VericastMatchReport:
         df['album'] = df['album'].astype(str)
         df['artist'] = df['artist'].astype(str)
         df['start_time_utc'] = pd.to_datetime(df['start_time_utc'], yearfirst=True, utc=True)
-        
-        print('Wtf '+ df.dtypes)
+
         self.df = df
 
     def model_data_for_xslx(self):
@@ -161,10 +160,10 @@ class Command(BaseCommand):
             help='End time formatted as: "HH:MM"'
             )
         parser.add_argument(
-            '--tz-offset', 
+            '--time-zone', 
             type=str,
-            help='Time zone offset from UTC time. (Example: Enter "+0100" for timezone UTC+01)',
-            default="+0000"
+            help='Time zone offset from UTC time. (Example: Enter "Europe/Madrid")',
+            default="UTC"
             )
             
     def handle(self, *args, **kwargs):
