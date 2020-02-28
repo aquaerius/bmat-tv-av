@@ -1,18 +1,17 @@
-import os
-import pandas as pd
-import numpy as np
 import datetime
-import dateutil.parser
 import json
+import os
 
-from django.contrib.auth.models import User
+import dateutil.parser
+import numpy as np
+import pandas as pd
 from django.core.management.base import BaseCommand
-from django.utils.crypto import get_random_string
+from django.utils.encoding import python_2_unicode_compatible
 
 from tv import models as tv_models
-         
 
-# Change directory to filesdir
+
+@python_2_unicode_compatible
 class VericastMatchReporter:
     """
     @params: filename, start_date, start_time, end_date, end_time, time_zone
@@ -20,7 +19,7 @@ class VericastMatchReporter:
     filename = None
     channel = None
     report_name = 'vericast-api-matches'
-    report_file_extension = 'xslx'
+    report_file_extension = 'xlsx'
     df = pd.DataFrame(columns=['title','length','album','artist','start_time_utc'])
     matches_between_dates = None
     start_time = None
@@ -42,8 +41,8 @@ class VericastMatchReporter:
             dfeng['local_datetime'] = pd.DatetimeIndex(dfeng['naive_datetime']).tz_localize(tz =kwargs['time_zone'])
             dfeng['utc_datetime'] = pd.DatetimeIndex(dfeng['local_datetime']).tz_convert(tz ='UTC')
             self.dfeng = dfeng
-            self.report_name +=' {} to {}.'.format(self.dfeng.loc['filter_start']['local_datetime'],self.dfeng.loc['filter_end']['local_datetime'])
-            self.report_name =kwargs['destination_dir']+ '.{}'.format(self.report_file_extension)
+            self.report_name +=' {} to {}'.format(self.dfeng.loc['filter_start']['local_datetime'],self.dfeng.loc['filter_end']['local_datetime'])
+            self.report_name =kwargs['destination_dir']+'/'+self.report_name + '.{}'.format(self.report_file_extension)
         except:
             raise
         with open(self.filename) as f:
@@ -61,14 +60,14 @@ class VericastMatchReporter:
         mask = (self.df['start_time_utc'] >= self.dfeng.loc['filter_start']['utc_datetime']) & (self.df['start_time_utc'] <= self.dfeng.loc['filter_end']['utc_datetime'])
         self.matches_between_dates = self.df.loc[mask]
         # Write report to xslx
-        writer = pd.ExcelWriter(self.report_name)
+        writer = pd.ExcelWriter(self.report_name, engine='openpyxl')
         self.matches_between_dates.to_excel(writer, sheet_name=self.channel, index=False)
         writer.save()
         writer.close()
-        print('File {} with {} matches has been created.'.format(self.report_name, self.matches_between_dates.count()))
+        print('File {} with {} matches has been created'.format(str(self.report_name), len(self.matches_between_dates.length)).decode('utf-8'))
     
     def __str__(self):
-        return 'Vericast API matches from '+self.channel.replace('_', ' ').upper()+' between times '+str(self.start_time)+' and '+str(self.end_time)+' UTC.'
+        return 'Vericast API matches from '+self.channel.replace('_', ' ').upper()+' between times '+str(self.start_time)+' and '+str(self.end_time)+' UTC'
 
     def __repr__(self):
         return "<{}: Channel {}>".format(self.__class__.__name__, self.channel)
@@ -83,12 +82,13 @@ class Command(BaseCommand):
     '"2018-02-26 12:00" and "2018-02-28 00:00".'
 
     
-    help = 'Search for programs by date and save them in .xslx file.'
+    help = 'Search for programs by date and save them in .xlsx file.'
 
     def add_arguments(self, parser):
         parser.add_argument(
             '--filename', 
             type=str,
+            required=True,
             help='Name of the ".json" file.'
             )
         parser.add_argument(
@@ -99,7 +99,7 @@ class Command(BaseCommand):
         parser.add_argument(
             '--start-time', 
             type=str,
-            default='00:00:00',
+            default='00:00',
             help='Start time formatted as: "HH:MM"'
             )
         parser.add_argument(
@@ -110,7 +110,7 @@ class Command(BaseCommand):
         parser.add_argument(
             '--end-time', 
             type=str,
-            default='00:00:00',
+            default='00:00',
             help='End time formatted as: "HH:MM"'
             )
         parser.add_argument(
@@ -121,7 +121,7 @@ class Command(BaseCommand):
             )
             
     def handle(self, *args, **kwargs):
-        # verify file exists
+        # Verify file exists
         try:
             if os.path.isfile(kwargs['filename']):
                 # Store destination directory
