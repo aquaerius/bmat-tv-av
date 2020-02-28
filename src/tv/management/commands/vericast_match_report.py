@@ -11,7 +11,7 @@ from django.utils.crypto import get_random_string
 from tv import models as tv_models
 
 
-class VericastMatchReport:
+class VericastMatchReporter:
     channel = None
     matches = None
     filename = None
@@ -19,18 +19,17 @@ class VericastMatchReport:
     def __init__(self, **kwargs):
         self.filename = kwargs['filename']
         # Change dir
-        os.chdir(filename[0:-len(filename.split('/')[-1])])
-        # Get the channel name from filename
-        self.channel = filename.split('/')[-1].split('-')[-1].split('.')[0]
-        print("Finding programs that match from channel: {}".format(self.channel))
-        # Initia
+        os.chdir(self.filename[0:-len(self.filename.split('/')[-1])])
+        # Extract channel name from filename
+        self.channel = self.filename.split('/')[-1].split('-')[-1].split('.')[0]
+        # Initialize df with all matches from file
         df = pd.DataFrame(columns=['title','length','album','artist','start_time_utc'])
-        with open(filename) as f:
+        with open(self.filename) as f:
             for line in f.readlines():
                 match = json.loads(line)
                 df = df.append(match, ignore_index=True)
         df['title'] = df['title'].astype(str)
-        df['length'] = df['number'].astype(int)
+        df['length'] = df['length'].astype(int)
         df['album'] = df['album'].astype(str)
         df['artist'] = df['artist'].astype(str)
         df['start_time_utc'] = pd.to_datetime(df['start_time_utc'], yearfirst=True, utc=True)
@@ -122,14 +121,15 @@ class VericastMatchReport:
         return
 
 class Command(BaseCommand):
+    # TODO Chenge description filename
     description='Generate ".xlsx" reports of programs aired between start_date and end_date.\n'
-    'Optionally filter between start_time and end_time/n'
-    '/nExample: vericast-reports -F my_report -Di 2018-02-26 -Df 2018-02-28 -Ti 12:00:30 -Tf 00:00:00/n'
-    'Returns a file named "my_report.xslx" in the current directory, with the programs aired between ' 
-    '"2018-02-26 12:00:30" and "2018-02-28 00:00:00"'
+    'Optionally filter between start_time and end_time, and timezone./n'
+    '/nExample: vericast-reports --filename matches-my_channel.json --start-date 2018-02-26 --end-date 2018-02-28 --start-time 12:00 --end-time 00:00:'
+    '--time-zone "Europe/Madrid" \n Returns a file named "vericast-matches-report.xslx" in the current directory, with the programs aired between ' 
+    '"2018-02-26 12:00" and "2018-02-28 00:00".'
 
     
-    help = 'Search for progrmas by date and save them in .xslx file.'
+    help = 'Search for programs by date and save them in .xslx file.'
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -171,26 +171,13 @@ class Command(BaseCommand):
         try:
             if os.path.isfile(kwargs['filename']):
                  # Create reporter from file
+                print("Finding programs that match from channel: {}".format(self.channel))
                 reporter = VericastMatchReporter(**kwargs)
-                report = reporter.between_dates()
+                # TODO rest of the routine
+                
                 print("File {} with matches for {} between dates {} and {} has been created.")
         except Exception as e:
             print(e)
-
-
-
-        # each line equals a python dictiorary
-        # Load into df
-        # Filter by kwargs
-        # output to xslx
-        # lines in file are: {"title": "Something Is Coming", "length": 3, "album": "Crime Drama", "artist": "Robert J Walsh", "start_time_utc": "2018-02-16T06:34:01.000000"}
-        # Make JSON valid or loop through each line in file and add to df
-        
-
-        # Make start_time_utc
-        # start_time_utc = datetime.datetime.strptime(kwargs['start-date']+kwargs['start-time'], '%Y-%m-%d%H:%M')
-
-
 """
 {"title": "Hav Kide Karu", "length": 6, "album": "Exotic Lands 2", "artist": "Marc Ferrari, Michael McGregor", "start_time_utc": "2018-02-15T21:39:50.000000"}
 {"title": "Up All Night", "length": 18, "album": "Soul 1", "artist": "Jamie Dunlap, Scott Nickoley, Stephen Lang", "start_time_utc": "2018-02-15T21:36:05.000000"}
